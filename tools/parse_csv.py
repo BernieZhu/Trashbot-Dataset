@@ -1,9 +1,5 @@
-from os import stat_result
-import cv2
-import numpy as np
 import csv
 import requests
-import json
 import argparse
 
 parser = argparse.ArgumentParser()
@@ -14,7 +10,7 @@ args=parser.parse_args()
 with open('Batch_4533959_batch_results.csv', newline='') as csvfile:
 	reader = csv.DictReader(csvfile)
 	for row in reader:
-		if ( args.HITId and row['HITId'] != args.HITId):
+		if (args.HITId and row['HITId'] != args.HITId):
 			continue
 		if (row['AssignmentStatus'] == 'Rejected'):
 			continue
@@ -32,8 +28,7 @@ with open('Batch_4533959_batch_results.csv', newline='') as csvfile:
 		print("Rotated: {}".format(row["Answer.rotated"] if row["Answer.invalid"] else 'False'))
 
 		for i in range(1,6):
-			act = row['Input.url']
-			action_exists = len(row["Answer.verb"+str(i)]) > 2 or len(row["Answer.object"+str(i)]) > 2 \
+			action_exists = len(row["Answer.verb{}".format(i)]) > 2 or len(row["Answer.object{}".format(i)]) > 2 \
 				or len(row["Answer.start{}".format(i)]) > 2 or len(row["Answer.end{}".format(i)]) > 2 \
 				or len(row["Answer.contact{}".format(i)]) > 2
 			if (not action_exists):
