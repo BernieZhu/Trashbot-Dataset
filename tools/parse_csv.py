@@ -6,9 +6,10 @@ import logging
 from logging import handlers
 
 parser = argparse.ArgumentParser()
+parser.add_argument("--csv", type=str, default="4533959")
+parser.add_argument("--hit", type=str, default="")
 parser.add_argument("--save_videos", action='store_const', const='save', default=False)
 parser.add_argument("--vis_label", action='store_const', const='save', default=False)
-parser.add_argument("--HITId", type=str, default="")
 args=parser.parse_args()
 
 class Logger(object):
@@ -49,11 +50,11 @@ def srt_format(start, end=""):
         e_ms = e_ms % 1000
     return "00:{:0>2d}:{:0>2d},{:0>3d} --> 00:{:0>2d}:{:0>2d},{:0>3d}".format(s_min, s_sec, s_ms, e_min, e_sec, e_ms)
 
-with open('Batch_4533959_batch_results.csv', newline='') as csvfile:
+with open('Batch_{}_batch_results.csv'.format(args.csv), newline='') as csvfile:
     log = Logger('all.log', level='info',screen=True)
     reader = csv.DictReader(csvfile)
     for row in reader:
-        if (args.HITId and row['HITId'] != args.HITId):
+        if (args.hit and row['HITId'] != args.hit):
             continue
         if (row['AssignmentStatus'] == 'Rejected'):
             continue
