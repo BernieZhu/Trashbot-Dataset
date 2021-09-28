@@ -3,13 +3,14 @@
 The annotation is in the csv format. Please use parse.py to parse the csv file.
 ```
 python tools/parse_csv.py [--save_videos] [--HITId ID] > log.txt
+--HITId ID: show annotations of specified HIT ID 
 --save_videos: save the videos in folder videos when parsing
---HITId ID: show annotation of specified HIT ID 
+--vis_label: save the annotations of each video in srt format
 ```
 Example:
 ```
-python tools/parse_csv.py --HITId 308KJXFUK07J67W9762F6UYFDJNTAI > log.txt
-cat log.txt
+python tools/parse_csv.py --HITId 308KJXFUK07J67W9762F6UYFDJNTAI --save_videos --vis_label 
+cat all.log
 Video: GH010299.mp4
 Task ID: 308KJXFUK07J67W9762F6UYFDJNTAI
 Low-quality: False
