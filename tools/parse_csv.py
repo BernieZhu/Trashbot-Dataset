@@ -4,6 +4,7 @@ import argparse
 import os
 import logging
 from logging import handlers
+from datetime import datetime
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--csv", type=str, default="4533959")
@@ -51,7 +52,7 @@ def srt_format(start, end=""):
     return "00:{:0>2d}:{:0>2d},{:0>3d} --> 00:{:0>2d}:{:0>2d},{:0>3d}".format(s_min, s_sec, s_ms, e_min, e_sec, e_ms)
 
 with open('Batch_{}_batch_results.csv'.format(args.csv), newline='') as csvfile:
-    log = Logger('all.log', level='info',screen=True)
+    log = Logger('{}.log'.format(args.hit if args.hit else "All_{}".format(datetime.now().strftime('%H_%M_%m_%d'))), level='info', screen=True)
     reader = csv.DictReader(csvfile)
     for row in reader:
         if (args.hit and row['HITId'] != args.hit):
@@ -63,16 +64,16 @@ with open('Batch_{}_batch_results.csv'.format(args.csv), newline='') as csvfile:
         log.logger.info("========================")
         log.logger.info("Video: {}.mp4".format(name))
         log.logger.info("HIT ID: {}".format(row["HITId"]))
-        srt = Logger('videos/{}.srt'.format(name), level='info')
+        if(args.vis_label):
+            srt = Logger('videos/{}.srt'.format(name), level='info')
 
         log.logger.info("Low-quality: {}".format(row["Answer.invalid"] if row["Answer.invalid"] else 'False'))
         log.logger.info("Rotated: {}".format(row["Answer.rotated"] if row["Answer.invalid"] else 'False'))
 
         srt_line = 1
         for i in range(1,6):
-            action_exists = len(row["Answer.verb{}".format(i)]) > 2 or len(row["Answer.object{}".format(i)]) > 2 \
-                or len(row["Answer.start{}".format(i)]) > 2 or len(row["Answer.end{}".format(i)]) > 2 \
-                or len(row["Answer.contact{}".format(i)]) > 2
+            action_exists = len(row["Answer.verb{}".format(i)]) > 2 and len(row["Answer.object{}".format(i)]) > 2 \
+                and len(row["Answer.start{}".format(i)]) > 2 and len(row["Answer.end{}".format(i)]) > 2
             if (not action_exists):
                 continue
             verb = row["Answer.verb"+str(i)]
@@ -116,4 +117,4 @@ with open('Batch_{}_batch_results.csv'.format(args.csv), newline='') as csvfile:
             data = requests.get(url)
             f.write(data.content)
             if(args.vis_label):
-                os.system("ffmpeg -i videos/{}.mp4 -vf subtitles=videos/{}.srt videos/{}_sub.mp4".format(name,name,name))
+                os.system("ffmpeg -i videos/{}.mp4 -vf subtitles=videos/{}.srt videos/{}_lbl.mp4".format(name,name,name))
