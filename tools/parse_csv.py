@@ -7,7 +7,7 @@ from logging import handlers
 from datetime import datetime
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--csv", type=str, default="4533959")
+parser.add_argument("--csv", type=str, default="4574137")
 parser.add_argument("--hit", type=str, default="")
 parser.add_argument("--save_videos", action='store_const', const='save', default=False)
 parser.add_argument("--vis_label", action='store_const', const='save', default=False)
@@ -51,7 +51,7 @@ def srt_format(start, end=""):
         e_ms = e_ms % 1000
     return "00:{:0>2d}:{:0>2d},{:0>3d} --> 00:{:0>2d}:{:0>2d},{:0>3d}".format(s_min, s_sec, s_ms, e_min, e_sec, e_ms)
 
-with open('Batch_{}_batch_results.csv'.format(args.csv), newline='') as csvfile:
+with open('csv/Batch_{}_batch_results.csv'.format(args.csv), newline='') as csvfile:
     log = Logger('{}.log'.format(args.hit if args.hit else "All_{}".format(datetime.now().strftime('%H_%M_%m_%d'))), level='info', screen=True)
     reader = csv.DictReader(csvfile)
     for row in reader:
