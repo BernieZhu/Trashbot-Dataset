@@ -2,6 +2,7 @@ import csv
 import json
 
 BATCH_ID='4574137'
+ROUND='1'
 
 with open('wrong_hit.txt'.format(BATCH_ID)) as f:
     wrong_hit = f.read().splitlines()
@@ -11,7 +12,7 @@ save_data = []
 csv_columns = []
 all = 0
 wrong = 0
-with open('csv/Batch_{}_batch_results.csv'.format(BATCH_ID), newline='') as csvfile:
+with open('csv/Batch_{}_batch_results{}.csv'.format(BATCH_ID, '_'+ROUND if ROUND != '0' else ''), newline='') as csvfile:
     reader = csv.DictReader(csvfile)
     for row in reader:
         if row['AssignmentStatus'] != 'Submitted':
@@ -35,10 +36,13 @@ with open('csv/Batch_{}_batch_results.csv'.format(BATCH_ID), newline='') as csvf
                     start = row["Answer.start{}".format(i)]
                     end = row["Answer.end{}".format(i)]
                 else:
-                    if row["Answer.morethan{}{}".format(index[j-1], i)] != "on":
-                        continue
-                    start = row["Answer.start{}_{}".format(i,j)]
-                    end = row["Answer.end{}_{}".format(i,j)]
+                    try:
+                        if row["Answer.morethan{}{}".format(index[j-1], i)] != "on":
+                            continue
+                        start = row["Answer.start{}_{}".format(i,j)]
+                        end = row["Answer.end{}_{}".format(i,j)]
+                    except:
+                        break
                 if (len(start) > 2) != (len(end) > 2):
                     time_missing = True
                     break
@@ -55,7 +59,7 @@ with open('csv/Batch_{}_batch_results.csv'.format(BATCH_ID), newline='') as csvf
         csv_columns = row.keys()
     print('Wrong annos {}/{}={:.2%}'.format(wrong, all, wrong/all))
 
-with open('csv/rev_'+BATCH_ID+'.csv', 'w') as save_csv:
+with open('csv/rev_{}.csv'.format(BATCH_ID+"_"+ROUND if ROUND != '0' else BATCH_ID), 'w') as save_csv:
     writer = csv.DictWriter(save_csv, fieldnames=csv_columns)
     writer.writeheader()
     for row in save_data:
